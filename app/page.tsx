@@ -19,7 +19,7 @@ export default function Home() {
           </Link>
           <nav className="hidden gap-6 md:flex">
             <Link
-              href="#"
+              href="/hotels"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Hotels

@@ -9,32 +9,36 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 const locations = [
   {
-    value: "new-york",
-    label: "New York, USA",
+    value: "warszawa",
+    label: "Warszawa, Polska",
   },
   {
-    value: "london",
-    label: "London, UK",
+    value: "krakow",
+    label: "Kraków, Polska",
   },
   {
-    value: "paris",
-    label: "Paris, France",
+    value: "gdansk",
+    label: "Gdańsk, Polska",
   },
   {
-    value: "tokyo",
-    label: "Tokyo, Japan",
+    value: "zakopane",
+    label: "Zakopane, Polska",
   },
   {
-    value: "sydney",
-    label: "Sydney, Australia",
+    value: "wroclaw",
+    label: "Wrocław, Polska",
   },
   {
-    value: "rome",
-    label: "Rome, Italy",
+    value: "poznan",
+    label: "Poznań, Polska",
   },
 ]
 
-export function LocationSearch() {
+interface LocationSearchProps {
+  onChange?: (location: string) => void;
+}
+
+export function LocationSearch({ onChange }: LocationSearchProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
   const [selectedLocation, setSelectedLocation] = React.useState("")
@@ -44,14 +48,14 @@ export function LocationSearch() {
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-start">
           <MapPinIcon className="w-4 h-4 mr-2" />
-          {selectedLocation ? selectedLocation : "Where are you going?"}
+          {selectedLocation ? selectedLocation : "Dokąd się wybierasz?"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder="Search location..." />
+          <CommandInput placeholder="Szukaj lokalizacji..." />
           <CommandList>
-            <CommandEmpty>No location found.</CommandEmpty>
+            <CommandEmpty>Nie znaleziono lokalizacji.</CommandEmpty>
             <CommandGroup>
               {locations.map((location) => (
                 <CommandItem
@@ -61,6 +65,9 @@ export function LocationSearch() {
                     setSelectedLocation(location.label)
                     setValue(currentValue)
                     setOpen(false)
+                    if (onChange) {
+                      onChange(location.label)
+                    }
                   }}
                 >
                   {location.label}
