@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs"
 import Image from "next/image"
 import Link from "next/link"
 import { HotelCard } from "@/components/hotel-card"
@@ -45,12 +45,12 @@ export default function Home() {
           </nav>
           <div className="flex items-center gap-4">
             <Link
-              href="#"
+              href="/signin"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Sign In
             </Link>
-            <Button>Register</Button>
+            <Button className="cursor-pointer">Register</Button>
           </div>
         </div>
       </header>
@@ -80,9 +80,8 @@ export default function Home() {
               <Card className="overflow-hidden border-0 shadow-lg">
                 <CardContent className="p-0">
                   <Tabs defaultValue="hotels" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 rounded-none">
-                      <TabsTrigger value="hotels">Hotels</TabsTrigger>
-                      <TabsTrigger value="packages">Packages</TabsTrigger>
+                    <TabsList className="grid w-full rounded-none font-bold text-white bg-black">
+                      Hotel
                     </TabsList>
                     <TabsContent value="hotels" className="p-6 space-y-4">
                       <div className="space-y-4">
@@ -90,14 +89,6 @@ export default function Home() {
                         <DatePickerWithRange />
                         <GuestSelector />
                         <Button className="w-full">Search Hotels</Button>
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="packages" className="p-6 space-y-4">
-                      <div className="space-y-4">
-                        <LocationSearch />
-                        <DatePickerWithRange />
-                        <GuestSelector />
-                        <Button className="w-full">Search Packages</Button>
                       </div>
                     </TabsContent>
                   </Tabs>
