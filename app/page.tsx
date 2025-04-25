@@ -50,7 +50,9 @@ export default function Home() {
             >
               Sign In
             </Link>
-            <Button className="cursor-pointer">Register</Button>
+            <Button className="cursor-pointer">
+              <Link href="/signup">Register</Link>
+            </Button>
           </div>
         </div>
       </header>
