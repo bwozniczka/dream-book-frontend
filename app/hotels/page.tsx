@@ -1,5 +1,5 @@
 "use client"
-
+import dynamic from "next/dynamic";
 import { useState } from "react"
 import Link from "next/link"
 import { HotelCard } from "@/components/hotel-card"
@@ -18,6 +18,8 @@ const initialHotels = [
     location: "Warszawa, Polska",
     price: 150,
     rating: 4.8,
+    latitude: 52.2297,
+    longitude: 21.0122,
     image:
       "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
   },
@@ -27,6 +29,8 @@ const initialHotels = [
     location: "Gdańsk, Polska",
     price: 120,
     rating: 4.5,
+    latitude: 54.3521,
+    longitude: 18.6466,
     image:
       "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
   },
@@ -36,6 +40,8 @@ const initialHotels = [
     location: "Zakopane, Polska",
     price: 180,
     rating: 4.9,
+    latitude: 49.2992,
+    longitude: 19.9496,
     image:
       "https://images.unsplash.com/photo-1568084680786-a84f91d1153c?q=80&w=1000&auto=format&fit=crop",
   },
@@ -45,11 +51,13 @@ const initialHotels = [
     location: "Kraków, Polska",
     price: 140,
     rating: 4.6,
+    latitude: 50.0647,
+    longitude: 19.945,
     image:
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
   },
-]
-
+];
+const HotelMap = dynamic(() => import("@/components/hotel-map"), { ssr: false });
 export default function Hotels() {
   const [location, setLocation] = useState("")
   const [dateRange, setDateRange] = useState({
@@ -162,6 +170,12 @@ export default function Hotels() {
               Hotels
             </Link>
             <Link
+            href="/hosts"
+            className="text-sm font-medium transition-colors hover:text-primary"
+            >
+             Hosts
+            </Link>
+            <Link
               href="#"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
@@ -192,7 +206,6 @@ export default function Hotels() {
             Find the perfect hotel for your stay
           </p>
         </div>
-
         <div className="p-6 mb-8 bg-white border rounded-xl shadow-lg transition-shadow hover:shadow-xl">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
             <div className="space-y-2">
@@ -536,7 +549,19 @@ export default function Hotels() {
               Try changing your search criteria or check back later.
             </p>
           </div>
-        )}
+        )}  <div className="mt-12">
+        <h2 className="text-xl font-bold mb-4">Mapa hoteli</h2>
+        <HotelMap
+          hotels={hotels.map((hotel) => ({
+            id: hotel.id,
+            name: hotel.name,
+            location: hotel.location,
+            latitude: hotel.latitude,
+            longitude: hotel.longitude,
+          }))}
+          className="h-48 w-full rounded-lg shadow-md"
+        />
+      </div>
       </main>
     </div>
   )

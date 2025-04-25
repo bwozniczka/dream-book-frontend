@@ -112,6 +112,13 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.leaflet-container {
+  height: 20%;
+  width: 20%;
+  border-radius: var(--radius-lg); /* Opcjonalne: zaokrąglenie rogów */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Opcjonalne: cień */
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

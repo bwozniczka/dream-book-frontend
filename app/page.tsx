@@ -25,6 +25,12 @@ export default function Home() {
               Hotels
             </Link>
             <Link
+            href="/hosts"
+            className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Hosts
+            </Link>
+            <Link
               href="#"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
