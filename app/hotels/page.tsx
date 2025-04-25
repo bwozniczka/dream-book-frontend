@@ -9,6 +9,7 @@ import { GuestSelector } from "@/components/guest-selector"
 import { SortSelector } from "@/components/sort-selector"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
+import { Slider } from "@/components/ui/slider"
 
 const initialHotels = [
   {
@@ -59,6 +60,16 @@ export default function Hotels() {
   const [sortOption, setSortOption] = useState("rating_desc")
   const [hotels, setHotels] = useState(initialHotels)
   const [loading, setLoading] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 500 })
+  const [amenities, setAmenities] = useState({
+    wifi: false,
+    parking: false,
+    breakfast: false,
+    pool: false,
+    gym: false,
+  })
+  const [stars, setStars] = useState(0)
 
   const prepareQueryParams = () => {
     return {
@@ -70,6 +81,14 @@ export default function Hotels() {
         children: guests.children,
         rooms: guests.rooms,
       },
+      priceRange: {
+        min: priceRange.min,
+        max: priceRange.max,
+      },
+      amenities: Object.entries(amenities)
+        .filter(([isSelected]) => isSelected)
+        .map(([name]) => name),
+      stars: stars,
       sort: sortOption,
     }
   }
@@ -80,9 +99,25 @@ export default function Hotels() {
     const queryParams = prepareQueryParams()
     console.log("Parametry zapytania do backendu:", queryParams)
 
-    // Symulacja zapytania do backendu
     setTimeout(() => {
       let sortedHotels = [...initialHotels]
+
+      sortedHotels = sortedHotels.filter(
+        (hotel) =>
+          hotel.price >= priceRange.min && hotel.price <= priceRange.max
+      )
+
+      if (location) {
+        sortedHotels = sortedHotels.filter((hotel) =>
+          hotel.location.toLowerCase().includes(location.toLowerCase())
+        )
+      }
+
+      if (stars > 0) {
+        sortedHotels = sortedHotels.filter(
+          (hotel) => Math.floor(hotel.rating) >= stars
+        )
+      }
 
       switch (sortOption) {
         case "price_asc":
@@ -105,12 +140,6 @@ export default function Hotels() {
           break
         default:
           break
-      }
-
-      if (location) {
-        sortedHotels = sortedHotels.filter((hotel) =>
-          hotel.location.toLowerCase().includes(location.toLowerCase())
-        )
       }
 
       setHotels(sortedHotels)
@@ -164,29 +193,308 @@ export default function Hotels() {
           </p>
         </div>
 
-        <div className="p-4 mb-8 bg-white border rounded-lg shadow-sm">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <div>
-              <p className="mb-2 text-sm font-medium">Localization</p>
+        <div className="p-6 mb-8 bg-white border rounded-xl shadow-lg transition-shadow hover:shadow-xl">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">Lokalizacja</p>
               <LocationSearch onChange={setLocation} />
             </div>
-            <div>
-              <p className="mb-2 text-sm font-medium">Date Range</p>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">Termin pobytu</p>
               <DatePickerWithRange className="w-full" />
             </div>
-            <div>
-              <p className="mb-2 text-sm font-medium">Guests and rooms</p>
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-gray-700">
+                Goście i pokoje
+              </p>
               <GuestSelector onChange={setGuests} />
             </div>
             <div className="flex items-end">
               <Button
-                className="w-full"
+                className="w-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-black hover:to-gray-800 text-white font-medium py-2.5"
                 onClick={searchHotels}
                 disabled={loading}
               >
-                {loading ? "Searching" : "Find"}
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Wyszukiwanie...
+                  </div>
+                ) : (
+                  <>Szukaj hoteli</>
+                )}
               </Button>
             </div>
+
+            <div className="md:col-span-4 flex justify-center">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="flex items-center text-sm text-gray-700 hover:text-black transition-colors font-medium rounded-full px-4 py-1.5 border border-gray-300 hover:border-gray-500 bg-gray-50 hover:bg-gray-100"
+              >
+                {isExpanded ? (
+                  <>
+                    Mniej filtrów <span className="ml-1.5">▲</span>
+                  </>
+                ) : (
+                  <>
+                    Więcej filtrów <span className="ml-1.5">▼</span>
+                  </>
+                )}
+              </button>
+            </div>
+            {isExpanded && (
+              <div className="md:col-span-4 grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-white rounded-xl border border-gray-100 mt-4 shadow-md transform transition-all">
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Przedział cenowy (cena za jedną dobę)
+                  </p>
+                  <div className="pt-6 px-2">
+                    <Slider
+                      value={[priceRange.min, priceRange.max]}
+                      min={0}
+                      max={500}
+                      step={10}
+                      onValueChange={(value) => {
+                        setPriceRange({ min: value[0], max: value[1] })
+                      }}
+                    />
+                    <div className="flex justify-between mt-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        {priceRange.min} PLN
+                      </span>
+                      <span className="text-sm font-medium text-gray-700">
+                        {priceRange.max} PLN
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Udogodnienia
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.wifi
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.wifi && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.wifi}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            wifi: !prev.wifi,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">Wi-Fi</span>
+                    </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.parking
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.parking && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.parking}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            parking: !prev.parking,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">Parking</span>
+                    </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.breakfast
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.breakfast && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.breakfast}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            breakfast: !prev.breakfast,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">Śniadanie</span>
+                    </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.pool
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.pool && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.pool}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            pool: !prev.pool,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">Basen</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Ocena w gwiazdkach
+                  </p>
+                  <div className="flex flex-col">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setStars(stars === star ? 0 : star)}
+                          className={`w-10 h-10 flex items-center justify-center rounded-md transition-all mr-1 ${
+                            stars >= star
+                              ? "bg-gradient-to-r from-yellow-400 to-amber-500 text-white shadow-md transform hover:-translate-y-0.5"
+                              : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                          }`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-2">
+                      {stars > 0 ? (
+                        <div className="text-sm text-gray-600">
+                          Wybrano: {stars}{" "}
+                          {stars === 1
+                            ? "gwiazdka"
+                            : stars < 5
+                            ? "gwiazdki"
+                            : "gwiazdek"}{" "}
+                          lub więcej
+                          <button
+                            onClick={() => setStars(0)}
+                            className="ml-2 text-xs text-gray-700 hover:text-black underline"
+                          >
+                            Wyczyść
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-sm text-gray-500">
+                          Kliknij aby wybrać minimalną ocenę
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
