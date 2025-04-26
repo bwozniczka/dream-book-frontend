@@ -27,24 +27,41 @@ export default function HotelDetails() {
             <span className="text-xl font-bold">HotelBooker</span>
           </Link>
           <nav className="hidden gap-6 md:flex">
-            <Link href="/" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="/"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               Hotels
             </Link>
-            <Link href="#" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               Deals
             </Link>
-            <Link href="#" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               Rewards
             </Link>
-            <Link href="#" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="#"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               Help
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <Link href="#" className="text-sm font-medium transition-colors hover:text-primary">
+            <Link
+              href="signin"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
               Sign In
             </Link>
-            <Button>Register</Button>
+            <Button>
+              <Link href="signup">Register</Link>
+            </Button>
           </div>
         </div>
       </header>
@@ -52,17 +69,25 @@ export default function HotelDetails() {
         <div className="container px-4 py-6 mx-auto md:px-6 md:py-8">
           <div className="flex flex-col gap-2 mb-6">
             <div className="flex items-center gap-2">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link
+                href="/"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
                 Home
               </Link>
               <span className="text-sm text-muted-foreground">/</span>
-              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link
+                href="/"
+                className="text-sm text-muted-foreground hover:text-foreground"
+              >
                 New York
               </Link>
               <span className="text-sm text-muted-foreground">/</span>
               <span className="text-sm">Grand Plaza Hotel</span>
             </div>
-            <h1 className="text-2xl font-bold md:text-3xl">Grand Plaza Hotel</h1>
+            <h1 className="text-2xl font-bold md:text-3xl">
+              Grand Plaza Hotel
+            </h1>
             <div className="flex items-center gap-2">
               <div className="flex items-center">
                 <StarIcon className="w-4 h-4 fill-primary text-primary" />
@@ -70,7 +95,9 @@ export default function HotelDetails() {
                 <StarIcon className="w-4 h-4 fill-primary text-primary" />
                 <StarIcon className="w-4 h-4 fill-primary text-primary" />
                 <StarIcon className="w-4 h-4 fill-primary text-primary" />
-                <span className="ml-2 text-sm font-medium">4.8 (245 reviews)</span>
+                <span className="ml-2 text-sm font-medium">
+                  4.8 (245 reviews)
+                </span>
               </div>
               <span className="text-sm text-muted-foreground">•</span>
               <div className="flex items-center gap-1">
@@ -91,19 +118,42 @@ export default function HotelDetails() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="relative overflow-hidden rounded-lg aspect-square">
-                <Image src="/placeholder.svg?height=300&width=300" alt="Hotel image" fill className="object-cover" />
+                <Image
+                  src="/placeholder.svg?height=300&width=300"
+                  alt="Hotel image"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="relative overflow-hidden rounded-lg aspect-square">
-                <Image src="/placeholder.svg?height=300&width=300" alt="Hotel image" fill className="object-cover" />
+                <Image
+                  src="/placeholder.svg?height=300&width=300"
+                  alt="Hotel image"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="relative overflow-hidden rounded-lg aspect-square">
-                <Image src="/placeholder.svg?height=300&width=300" alt="Hotel image" fill className="object-cover" />
+                <Image
+                  src="/placeholder.svg?height=300&width=300"
+                  alt="Hotel image"
+                  fill
+                  className="object-cover"
+                />
               </div>
               <div className="relative overflow-hidden rounded-lg aspect-square">
-                <Button variant="secondary" className="absolute inset-0 w-full h-full">
+                <Button
+                  variant="secondary"
+                  className="absolute inset-0 w-full h-full"
+                >
                   +12 more
                 </Button>
-                <Image src="/placeholder.svg?height=300&width=300" alt="Hotel image" fill className="object-cover" />
+                <Image
+                  src="/placeholder.svg?height=300&width=300"
+                  alt="Hotel image"
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </div>
@@ -120,23 +170,31 @@ export default function HotelDetails() {
                 <TabsContent value="overview" className="pt-6">
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-xl font-semibold mb-4">About Grand Plaza Hotel</h2>
+                      <h2 className="text-xl font-semibold mb-4">
+                        About Grand Plaza Hotel
+                      </h2>
                       <p className="text-muted-foreground">
-                        Located in the heart of New York City, Grand Plaza Hotel offers luxury accommodations with
-                        stunning views of Central Park. Our hotel features spacious rooms, a rooftop pool, fine dining
-                        restaurants, and a state-of-the-art fitness center.
+                        Located in the heart of New York City, Grand Plaza Hotel
+                        offers luxury accommodations with stunning views of
+                        Central Park. Our hotel features spacious rooms, a
+                        rooftop pool, fine dining restaurants, and a
+                        state-of-the-art fitness center.
                       </p>
                       <p className="mt-4 text-muted-foreground">
-                        With its prime location, guests can easily access famous attractions like Times Square, Broadway
-                        theaters, and Fifth Avenue shopping. Our dedicated staff provides exceptional service to ensure
-                        a memorable stay for all our guests.
+                        With its prime location, guests can easily access famous
+                        attractions like Times Square, Broadway theaters, and
+                        Fifth Avenue shopping. Our dedicated staff provides
+                        exceptional service to ensure a memorable stay for all
+                        our guests.
                       </p>
                     </div>
 
                     <Separator />
 
                     <div>
-                      <h2 className="text-xl font-semibold mb-4">Hotel Highlights</h2>
+                      <h2 className="text-xl font-semibold mb-4">
+                        Hotel Highlights
+                      </h2>
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="flex items-start gap-2">
                           <CheckIcon className="w-5 h-5 text-primary mt-0.5" />
@@ -180,7 +238,9 @@ export default function HotelDetails() {
                 </TabsContent>
                 <TabsContent value="rooms" className="pt-6">
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold mb-4">Available Rooms</h2>
+                    <h2 className="text-xl font-semibold mb-4">
+                      Available Rooms
+                    </h2>
                     <div className="space-y-4">
                       <Card>
                         <CardContent className="p-0">
@@ -196,7 +256,9 @@ export default function HotelDetails() {
                             <div className="p-6">
                               <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                                 <div>
-                                  <h3 className="text-lg font-semibold">Deluxe King Room</h3>
+                                  <h3 className="text-lg font-semibold">
+                                    Deluxe King Room
+                                  </h3>
                                   <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="outline">King Bed</Badge>
                                     <Badge variant="outline">City View</Badge>
@@ -207,20 +269,26 @@ export default function HotelDetails() {
                                       <WifiIcon className="w-4 h-4" /> Free WiFi
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
-                                      <UtensilsIcon className="w-4 h-4" /> Breakfast included
+                                      <UtensilsIcon className="w-4 h-4" />{" "}
+                                      Breakfast included
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
                                       <TvIcon className="w-4 h-4" /> Smart TV
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
-                                      <ParkingIcon className="w-4 h-4" /> Free parking
+                                      <ParkingIcon className="w-4 h-4" /> Free
+                                      parking
                                     </li>
                                   </ul>
                                 </div>
                                 <div className="mt-4 md:mt-0 md:text-right">
                                   <div className="text-2xl font-bold">$199</div>
-                                  <div className="text-sm text-muted-foreground">per night</div>
-                                  <Button className="mt-4 w-full md:w-auto">Book Now</Button>
+                                  <div className="text-sm text-muted-foreground">
+                                    per night
+                                  </div>
+                                  <Button className="mt-4 w-full md:w-auto">
+                                    Book Now
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -242,7 +310,9 @@ export default function HotelDetails() {
                             <div className="p-6">
                               <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                                 <div>
-                                  <h3 className="text-lg font-semibold">Executive Suite</h3>
+                                  <h3 className="text-lg font-semibold">
+                                    Executive Suite
+                                  </h3>
                                   <div className="flex items-center gap-2 mt-1">
                                     <Badge variant="outline">King Bed</Badge>
                                     <Badge variant="outline">Park View</Badge>
@@ -253,20 +323,26 @@ export default function HotelDetails() {
                                       <WifiIcon className="w-4 h-4" /> Free WiFi
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
-                                      <UtensilsIcon className="w-4 h-4" /> Breakfast included
+                                      <UtensilsIcon className="w-4 h-4" />{" "}
+                                      Breakfast included
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
                                       <TvIcon className="w-4 h-4" /> Smart TV
                                     </li>
                                     <li className="flex items-center gap-2 text-sm">
-                                      <SwimmingPoolIcon className="w-4 h-4" /> Pool access
+                                      <SwimmingPoolIcon className="w-4 h-4" />{" "}
+                                      Pool access
                                     </li>
                                   </ul>
                                 </div>
                                 <div className="mt-4 md:mt-0 md:text-right">
                                   <div className="text-2xl font-bold">$349</div>
-                                  <div className="text-sm text-muted-foreground">per night</div>
-                                  <Button className="mt-4 w-full md:w-auto">Book Now</Button>
+                                  <div className="text-sm text-muted-foreground">
+                                    per night
+                                  </div>
+                                  <Button className="mt-4 w-full md:w-auto">
+                                    Book Now
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -278,7 +354,9 @@ export default function HotelDetails() {
                 </TabsContent>
                 <TabsContent value="amenities" className="pt-6">
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold mb-4">Hotel Amenities</h2>
+                    <h2 className="text-xl font-semibold mb-4">
+                      Hotel Amenities
+                    </h2>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                       <Card>
                         <CardHeader>
@@ -289,7 +367,8 @@ export default function HotelDetails() {
                         </CardHeader>
                         <CardContent>
                           <p className="text-sm text-muted-foreground">
-                            Enjoy our rooftop swimming pool with panoramic views of the city skyline.
+                            Enjoy our rooftop swimming pool with panoramic views
+                            of the city skyline.
                           </p>
                         </CardContent>
                       </Card>
@@ -302,7 +381,8 @@ export default function HotelDetails() {
                         </CardHeader>
                         <CardContent>
                           <p className="text-sm text-muted-foreground">
-                            Multiple dining options including fine dining, casual café, and 24-hour room service.
+                            Multiple dining options including fine dining,
+                            casual café, and 24-hour room service.
                           </p>
                         </CardContent>
                       </Card>
@@ -315,7 +395,8 @@ export default function HotelDetails() {
                         </CardHeader>
                         <CardContent>
                           <p className="text-sm text-muted-foreground">
-                            High-speed internet access available throughout the hotel.
+                            High-speed internet access available throughout the
+                            hotel.
                           </p>
                         </CardContent>
                       </Card>
@@ -336,7 +417,9 @@ export default function HotelDetails() {
                           </div>
                           <div>
                             <div className="font-medium">John Doe</div>
-                            <div className="text-sm text-muted-foreground">Stayed in May 2023</div>
+                            <div className="text-sm text-muted-foreground">
+                              Stayed in May 2023
+                            </div>
                           </div>
                           <div className="flex items-center gap-1 ml-auto">
                             <StarIcon className="w-4 h-4 fill-primary text-primary" />
@@ -344,8 +427,10 @@ export default function HotelDetails() {
                           </div>
                         </div>
                         <p className="text-muted-foreground">
-                          Excellent location and service. The room was spacious and clean with a beautiful view of
-                          Central Park. Staff was very friendly and helpful. Would definitely stay here again!
+                          Excellent location and service. The room was spacious
+                          and clean with a beautiful view of Central Park. Staff
+                          was very friendly and helpful. Would definitely stay
+                          here again!
                         </p>
                       </div>
                       <div className="p-4 border rounded-lg">
@@ -355,7 +440,9 @@ export default function HotelDetails() {
                           </div>
                           <div>
                             <div className="font-medium">Jane Smith</div>
-                            <div className="text-sm text-muted-foreground">Stayed in April 2023</div>
+                            <div className="text-sm text-muted-foreground">
+                              Stayed in April 2023
+                            </div>
                           </div>
                           <div className="flex items-center gap-1 ml-auto">
                             <StarIcon className="w-4 h-4 fill-primary text-primary" />
@@ -363,8 +450,10 @@ export default function HotelDetails() {
                           </div>
                         </div>
                         <p className="text-muted-foreground">
-                          Great hotel in a perfect location. The room was comfortable and the staff was attentive. The
-                          only minor issue was the noise from the street, but that's expected in NYC.
+                          Great hotel in a perfect location. The room was
+                          comfortable and the staff was attentive. The only
+                          minor issue was the noise from the street, but that's
+                          expected in NYC.
                         </p>
                       </div>
                     </div>
@@ -397,14 +486,21 @@ export default function HotelDetails() {
                     </div>
                   </div>
                   <Button className="w-full">Reserve Now</Button>
-                  <p className="text-xs text-center text-muted-foreground">You won't be charged yet</p>
+                  <p className="text-xs text-center text-muted-foreground">
+                    You won't be charged yet
+                  </p>
                 </CardContent>
               </Card>
 
               <div className="mt-6 p-4 border rounded-lg">
                 <h3 className="font-medium mb-2">Location</h3>
                 <div className="relative w-full h-40 mb-4 rounded-md overflow-hidden">
-                  <Image src="/placeholder.svg?height=200&width=400" alt="Map" fill className="object-cover" />
+                  <Image
+                    src="/placeholder.svg?height=200&width=400"
+                    alt="Map"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">
                   <MapPinIcon className="w-4 h-4 inline mr-1" />
@@ -425,17 +521,26 @@ export default function HotelDetails() {
               <h3 className="text-sm font-medium">Company</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Careers
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Press
                   </Link>
                 </li>
@@ -445,17 +550,26 @@ export default function HotelDetails() {
               <h3 className="text-sm font-medium">Help</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Support
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     FAQs
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Contact
                   </Link>
                 </li>
@@ -465,17 +579,26 @@ export default function HotelDetails() {
               <h3 className="text-sm font-medium">Legal</h3>
               <ul className="space-y-1">
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Terms
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Privacy
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+                  <Link
+                    href="#"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
                     Cookies
                   </Link>
                 </li>
@@ -496,9 +619,14 @@ export default function HotelDetails() {
             </div>
           </div>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-muted-foreground">© 2023 HotelBooker. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">
+              © 2023 HotelBooker. All rights reserved.
+            </p>
             <div className="flex gap-4">
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 <span className="sr-only">Facebook</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -515,7 +643,10 @@ export default function HotelDetails() {
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 <span className="sr-only">Twitter</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -532,7 +663,10 @@ export default function HotelDetails() {
                   <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                 </svg>
               </Link>
-              <Link href="#" className="text-muted-foreground hover:text-foreground">
+              <Link
+                href="#"
+                className="text-muted-foreground hover:text-foreground"
+              >
                 <span className="sr-only">Instagram</span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -558,4 +692,3 @@ export default function HotelDetails() {
     </div>
   )
 }
-
