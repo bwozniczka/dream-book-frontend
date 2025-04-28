@@ -31,6 +31,12 @@ export default function Home() {
               Hosts
             </Link>
             <Link
+              href="/listings"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Listings
+            </Link>
+            <Link
               href="#"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
