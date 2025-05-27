@@ -1,5 +1,5 @@
 "use client"
-import dynamic from "next/dynamic";
+import dynamic from "next/dynamic"
 import { useState } from "react"
 import Link from "next/link"
 import { HotelCard } from "@/components/hotel-card"
@@ -56,8 +56,8 @@ const initialHotels = [
     image:
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
   },
-];
-const HotelMap = dynamic(() => import("@/components/hotel-map"), { ssr: false });
+]
+const HotelMap = dynamic(() => import("@/components/hotel-map"), { ssr: false })
 export default function Hotels() {
   const [location, setLocation] = useState("")
   const [dateRange, setDateRange] = useState({
@@ -76,8 +76,20 @@ export default function Hotels() {
     breakfast: false,
     pool: false,
     gym: false,
+    airConditioning: false,
+    spa: false,
+    petFriendly: false,
+    restaurant: false,
+    roomService: false,
   })
   const [stars, setStars] = useState(0)
+  const [propertyType, setPropertyType] = useState("all")
+  const [distanceFromCenter, setDistanceFromCenter] = useState(10)
+  const [accessibility, setAccessibility] = useState({
+    wheelchair: false,
+    elevator: false,
+    accessibleBathroom: false,
+  })
 
   const prepareQueryParams = () => {
     return {
@@ -94,9 +106,14 @@ export default function Hotels() {
         max: priceRange.max,
       },
       amenities: Object.entries(amenities)
-        .filter(([isSelected]) => isSelected)
+        .filter(([_, isSelected]) => isSelected)
         .map(([name]) => name),
       stars: stars,
+      propertyType: propertyType,
+      distanceFromCenter: distanceFromCenter,
+      accessibility: Object.entries(accessibility)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([name]) => name),
       sort: sortOption,
     }
   }
@@ -124,6 +141,25 @@ export default function Hotels() {
       if (stars > 0) {
         sortedHotels = sortedHotels.filter(
           (hotel) => Math.floor(hotel.rating) >= stars
+        )
+      }
+
+      if (propertyType !== "all") {
+        console.log("Filtrowanie po typie obiektu:", propertyType)
+      }
+
+      if (distanceFromCenter < 20) {
+        console.log("Filtrowanie po odległości od centrum:", distanceFromCenter)
+      }
+
+      const selectedAccessibility = Object.entries(accessibility)
+        .filter(([, isSelected]) => isSelected)
+        .map(([name]) => name)
+
+      if (selectedAccessibility.length > 0) {
+        console.log(
+          "Filtrowanie po opcjach dostępności:",
+          selectedAccessibility
         )
       }
 
@@ -170,10 +206,10 @@ export default function Hotels() {
               Hotels
             </Link>
             <Link
-            href="/hosts"
-            className="text-sm font-medium transition-colors hover:text-primary"
+              href="/hosts"
+              className="text-sm font-medium transition-colors hover:text-primary"
             >
-             Hosts
+              Hosts
             </Link>
             <Link
               href="#"
@@ -192,6 +228,12 @@ export default function Hotels() {
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Help
+            </Link>
+            <Link
+              href="/profile"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Mój profil
             </Link>
           </nav>
         </div>
@@ -450,6 +492,80 @@ export default function Hotels() {
                       />
                       <span className="text-sm text-gray-800">Basen</span>
                     </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.airConditioning
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.airConditioning && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.airConditioning}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            airConditioning: !prev.airConditioning,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">
+                        Klimatyzacja
+                      </span>
+                    </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          amenities.spa
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {amenities.spa && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={amenities.spa}
+                        onChange={() =>
+                          setAmenities((prev) => ({
+                            ...prev,
+                            spa: !prev.spa,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">SPA</span>
+                    </label>
                   </div>
                 </div>
 
@@ -506,11 +622,135 @@ export default function Hotels() {
                     </div>
                   </div>
                 </div>
+
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Typ obiektu
+                  </p>
+                  <div className="grid grid-cols-1 gap-2">
+                    <select
+                      value={propertyType}
+                      onChange={(e) => setPropertyType(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    >
+                      <option value="all">Wszystkie typy</option>
+                      <option value="hotel">Hotel</option>
+                      <option value="apartment">Apartament</option>
+                      <option value="hostel">Hostel</option>
+                      <option value="guesthouse">Pensjonat</option>
+                      <option value="villa">Willa</option>
+                      <option value="resort">Kurort</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Odległość od centrum
+                  </p>
+                  <div className="pt-2 px-2">
+                    <Slider
+                      value={[distanceFromCenter]}
+                      min={0}
+                      max={20}
+                      step={1}
+                      onValueChange={(value) => {
+                        setDistanceFromCenter(value[0])
+                      }}
+                    />
+                    <div className="flex justify-between mt-2">
+                      <span className="text-sm font-medium text-gray-700">
+                        {distanceFromCenter} km od centrum
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  <p className="mb-3 text-sm font-medium text-gray-700">
+                    Dostępność dla niepełnosprawnych
+                  </p>
+                  <div className="grid grid-cols-1 gap-3">
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          accessibility.wheelchair
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {accessibility.wheelchair && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={accessibility.wheelchair}
+                        onChange={() =>
+                          setAccessibility((prev) => ({
+                            ...prev,
+                            wheelchair: !prev.wheelchair,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">
+                        Dostosowany dla wózków
+                      </span>
+                    </label>
+                    <label className="flex items-center space-x-2 group cursor-pointer">
+                      <div
+                        className={`w-5 h-5 rounded flex items-center justify-center border transition-colors ${
+                          accessibility.elevator
+                            ? "bg-gray-700 border-gray-700"
+                            : "border-gray-300 group-hover:border-gray-400"
+                        }`}
+                      >
+                        {accessibility.elevator && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 text-white"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={accessibility.elevator}
+                        onChange={() =>
+                          setAccessibility((prev) => ({
+                            ...prev,
+                            elevator: !prev.elevator,
+                          }))
+                        }
+                        className="opacity-0 absolute"
+                      />
+                      <span className="text-sm text-gray-800">Winda</span>
+                    </label>
+                  </div>
+                </div>
               </div>
             )}
           </div>
         </div>
-
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-lg font-medium">{hotels.length}</p>
@@ -520,7 +760,6 @@ export default function Hotels() {
           </div>
           <SortSelector value={sortOption} onChange={setSortOption} />
         </div>
-
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <p className="text-lg font-medium">Loading...</p>
@@ -539,7 +778,6 @@ export default function Hotels() {
             ))}
           </div>
         )}
-
         {hotels.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center h-64">
             <p className="text-lg font-medium">
@@ -549,19 +787,20 @@ export default function Hotels() {
               Try changing your search criteria or check back later.
             </p>
           </div>
-        )}  <div className="mt-12">
-        <h2 className="text-xl font-bold mb-4">Mapa hoteli</h2>
-        <HotelMap
-          hotels={hotels.map((hotel) => ({
-            id: hotel.id,
-            name: hotel.name,
-            location: hotel.location,
-            latitude: hotel.latitude,
-            longitude: hotel.longitude,
-          }))}
-          className="h-48 w-full rounded-lg shadow-md"
-        />
-      </div>
+        )}{" "}
+        <div className="mt-12">
+          <h2 className="text-xl font-bold mb-4">Mapa hoteli</h2>
+          <HotelMap
+            hotels={hotels.map((hotel) => ({
+              id: hotel.id,
+              name: hotel.name,
+              location: hotel.location,
+              latitude: hotel.latitude,
+              longitude: hotel.longitude,
+            }))}
+            className="h-48 w-full rounded-lg shadow-md"
+          />
+        </div>
       </main>
     </div>
   )

@@ -25,8 +25,8 @@ export default function Home() {
               Hotels
             </Link>
             <Link
-            href="/hosts"
-            className="text-sm font-medium transition-colors hover:text-primary"
+              href="/hosts"
+              className="text-sm font-medium transition-colors hover:text-primary"
             >
               Hosts
             </Link>
@@ -47,6 +47,12 @@ export default function Home() {
               className="text-sm font-medium transition-colors hover:text-primary"
             >
               Rewards
+            </Link>
+            <Link
+              href="/profile"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              My Profile
             </Link>
             <Link
               href="#"
