@@ -1,12 +1,14 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import Link from "next/link";
-import { HostCard } from "@/components/host-card";
-import { LocationSearch } from "@/components/location-search";
-import { DatePickerWithRange } from "@/components/date-range-picker";
-import { GuestSelector } from "@/components/guest-selector";
-import { Button } from "@/components/ui/button";
+import { useState } from "react"
+import Link from "next/link"
+import { HostCard } from "@/components/host-card"
+import { LocationSearch } from "@/components/location-search"
+import { DatePickerWithRange } from "@/components/date-range-picker"
+import { GuestSelector } from "@/components/guest-selector"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Footer } from "@/components/footer"
 
 const initialHosts = [
   {
@@ -33,29 +35,29 @@ const initialHosts = [
     image:
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
   },
-];
+]
 
 export default function Hosts() {
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("")
   const [dateRange, setDateRange] = useState({
     from: new Date(),
     to: new Date(new Date().setDate(new Date().getDate() + 7)),
-  });
-  const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
-  const [filteredHosts, setFilteredHosts] = useState(initialHosts);
-  const [loading, setLoading] = useState(false);
+  })
+  const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 })
+  const [filteredHosts, setFilteredHosts] = useState(initialHosts)
+  const [loading, setLoading] = useState(false)
 
   const handleSearch = () => {
-    setLoading(true);
+    setLoading(true)
 
     setTimeout(() => {
       const filtered = initialHosts.filter((host) =>
         host.location.toLowerCase().includes(location.toLowerCase())
-      );
-      setFilteredHosts(filtered);
-      setLoading(false);
-    }, 500);
-  };
+      )
+      setFilteredHosts(filtered)
+      setLoading(false)
+    }, 500)
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -198,6 +200,7 @@ export default function Hosts() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
-  );
+  )
 }

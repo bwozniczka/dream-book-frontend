@@ -10,6 +10,7 @@ import { SortSelector } from "@/components/sort-selector"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
 import { Slider } from "@/components/ui/slider"
+import { Footer } from "@/components/footer"
 
 const initialHotels = [
   {
@@ -802,6 +803,7 @@ export default function Hotels() {
           />
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

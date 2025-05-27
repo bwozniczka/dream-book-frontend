@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
 import { DatePickerWithRange } from "@/components/date-range-picker"
 import { GuestSelector } from "@/components/guest-selector"
 import {
@@ -607,10 +608,10 @@ export default function HotelDetails() {
             <div className="space-y-3">
               <h3 className="text-sm font-medium">Newsletter</h3>
               <form className="flex space-x-2">
-                <input
+                <Input
+                  placeholder="Enter your email"
                   type="email"
-                  placeholder="Email"
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 max-w-[160px] sm:max-w-[200px]"
+                  className="max-w-[160px] sm:max-w-[200px]"
                 />
                 <Button type="submit" size="sm">
                   Join
@@ -620,7 +621,7 @@ export default function HotelDetails() {
           </div>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
-              © 2023 HotelBooker. All rights reserved.
+              © 2025 HotelBooker. All rights reserved.
             </p>
             <div className="flex gap-4">
               <Link
