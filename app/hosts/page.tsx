@@ -7,7 +7,6 @@ import { LocationSearch } from "@/components/location-search"
 import { DatePickerWithRange } from "@/components/date-range-picker"
 import { GuestSelector } from "@/components/guest-selector"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Footer } from "@/components/footer"
 
 const initialHosts = [
