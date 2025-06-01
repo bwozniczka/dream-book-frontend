@@ -1,6 +1,6 @@
 "use client"
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { HotelCard } from "@/components/hotel-card"
 import { LocationSearch } from "@/components/location-search"
@@ -11,54 +11,40 @@ import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
 import { Slider } from "@/components/ui/slider"
 import { Footer } from "@/components/footer"
+import { fetchHotels } from "@/lib/api"
+import type { Hotel } from "@/lib/types"
 
-const initialHotels = [
-  {
-    id: 1,
-    name: "Grand Hotel Warszawa",
-    location: "Warszawa, Polska",
-    price: 150,
-    rating: 4.8,
-    latitude: 52.2297,
-    longitude: 21.0122,
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000&auto=format&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Seaside Resort",
-    location: "Gdańsk, Polska",
-    price: 120,
-    rating: 4.5,
-    latitude: 54.3521,
-    longitude: 18.6466,
-    image:
-      "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
-  },
-  {
-    id: 3,
-    name: "Mountain Lodge",
-    location: "Zakopane, Polska",
-    price: 180,
-    rating: 4.9,
-    latitude: 49.2992,
-    longitude: 19.9496,
-    image:
-      "https://images.unsplash.com/photo-1568084680786-a84f91d1153c?q=80&w=1000&auto=format&fit=crop",
-  },
-  {
-    id: 4,
-    name: "City View Hotel",
-    location: "Kraków, Polska",
-    price: 140,
-    rating: 4.6,
-    latitude: 50.0647,
-    longitude: 19.945,
-    image:
-      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1000&auto=format&fit=crop",
-  },
-]
+// Converting API hotels to the format expected by components
+const mapApiHotelToComponentFormat = (apiHotel: Hotel) => {
+  // Safety conversion of latitude and longitude
+  const lat = apiHotel.latitude ? parseFloat(String(apiHotel.latitude)) : 0;
+  const lng = apiHotel.longitude ? parseFloat(String(apiHotel.longitude)) : 0;
+  
+  return {
+    id: apiHotel.id,
+    name: apiHotel.title,
+    location: apiHotel.location,
+    price: parseFloat(apiHotel.price_per_night),
+    rating: 4.5, // Default rating since API doesn't provide it
+    latitude: isNaN(lat) ? 0 : lat, // Default to 0 if parsing fails
+    longitude: isNaN(lng) ? 0 : lng, // Default to 0 if parsing fails
+    image: apiHotel.image_url,
+  };
+}
 const HotelMap = dynamic(() => import("@/components/hotel-map"), { ssr: false })
+
+// Type definition for the frontend hotel model
+interface FrontendHotel {
+  id: number;
+  name: string;
+  location: string;
+  price: number;
+  rating: number;
+  latitude: number;
+  longitude: number;
+  image: string;
+}
+
 export default function Hotels() {
   const [location, setLocation] = useState("")
   const [dateRange, setDateRange] = useState({
@@ -67,8 +53,32 @@ export default function Hotels() {
   })
   const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 })
   const [sortOption, setSortOption] = useState("rating_desc")
-  const [hotels, setHotels] = useState(initialHotels)
-  const [loading, setLoading] = useState(false)
+  const [hotels, setHotels] = useState<FrontendHotel[]>([])
+  const [apiHotels, setApiHotels] = useState<Hotel[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  
+  // Fetch hotels from API on component mount
+  useEffect(() => {
+    const getHotels = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchHotels();
+        setApiHotels(data);
+        
+        // Convert API hotels to frontend format
+        const formattedHotels = data.map(hotel => mapApiHotelToComponentFormat(hotel));
+        setHotels(formattedHotels);
+      } catch (err) {
+        setError("Failed to fetch hotels. Please try again later.");
+        console.error("Error fetching hotels:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getHotels();
+  }, []);
   const [isExpanded, setIsExpanded] = useState(false)
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500 })
   const [amenities, setAmenities] = useState({
@@ -125,8 +135,15 @@ export default function Hotels() {
     const queryParams = prepareQueryParams()
     console.log("Parametry zapytania do backendu:", queryParams)
 
+    // In a real application, we would fetch filtered data from the API
+    // For now, we'll filter the existing API data client-side
     setTimeout(() => {
-      let sortedHotels = [...initialHotels]
+      if (apiHotels.length === 0) {
+        setLoading(false)
+        return
+      }
+
+      let sortedHotels = apiHotels.map(hotel => mapApiHotelToComponentFormat(hotel))
 
       sortedHotels = sortedHotels.filter(
         (hotel) =>
@@ -763,7 +780,42 @@ export default function Hotels() {
         </div>
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <p className="text-lg font-medium">Loading...</p>
+            <div className="flex flex-col items-center">
+              <svg
+                className="animate-spin h-8 w-8 text-gray-700 mb-4"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              <p className="text-lg font-medium">Loading hotels...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center h-64">
+            <p className="text-lg font-medium text-red-600">{error}</p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Please try again later or contact support.
+            </p>
+            <Button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 bg-gray-700 hover:bg-gray-800"
+            >
+              Refresh
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -779,7 +831,7 @@ export default function Hotels() {
             ))}
           </div>
         )}
-        {hotels.length === 0 && !loading && (
+        {hotels.length === 0 && !loading && !error && (
           <div className="flex flex-col items-center justify-center h-64">
             <p className="text-lg font-medium">
               No hotels found for your search
@@ -789,19 +841,21 @@ export default function Hotels() {
             </p>
           </div>
         )}{" "}
-        <div className="mt-12">
-          <h2 className="text-xl font-bold mb-4">Mapa hoteli</h2>
-          <HotelMap
-            hotels={hotels.map((hotel) => ({
-              id: hotel.id,
-              name: hotel.name,
-              location: hotel.location,
-              latitude: hotel.latitude,
-              longitude: hotel.longitude,
-            }))}
-            className="h-48 w-full rounded-lg shadow-md"
-          />
-        </div>
+        {hotels.length > 0 && !loading && !error && (
+          <div className="mt-12">
+            <h2 className="text-xl font-bold mb-4">Mapa hoteli</h2>
+            <HotelMap
+              hotels={hotels.map((hotel) => ({
+                id: hotel.id,
+                name: hotel.name,
+                location: hotel.location,
+                latitude: hotel.latitude,
+                longitude: hotel.longitude,
+              }))}
+              className="h-64 w-full rounded-lg shadow-md"
+            />
+          </div>
+        )}
       </main>
       <Footer />
     </div>

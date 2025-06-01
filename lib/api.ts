@@ -1,5 +1,5 @@
 // filepath: /Users/bartlomiejwozniczka/Desktop/dream-book-frontend/lib/api.ts
-import type { Stay, UserData } from "@/lib/types"
+import type { Stay, UserData, Listing, Hotel } from "@/lib/types"
 import { mockLandlordStays, mockGuestStays, mockUserProfile } from "./mock-data"
 
 // External API base URL - używany w rzeczywistej implementacji
@@ -135,5 +135,82 @@ export async function updateUserProfile(
   } catch (error) {
     console.error("Błąd podczas aktualizacji profilu:", error)
     throw new Error("Nie udało się zaktualizować profilu")
+  }
+}
+
+export async function fetchListings(): Promise<Listing[]> {
+  try {
+    // Set a timeout for the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+    
+    const response = await fetch("http://127.0.0.1:8000/api/listings/", {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch listings: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+    // You could add more sophisticated fallback logic here if needed
+    // For example, returning mock data when the API is unavailable
+    return [];
+  }
+}
+
+export async function createListing(listingData: {
+  title: string;
+  description: string;
+  price_per_night: string;
+  location: string;
+}): Promise<Listing> {
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/listings/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Add authorization headers if required by your API
+        // "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(listingData)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create listing: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating listing:", error);
+    throw error;
+  }
+}
+
+export async function fetchHotels(): Promise<Hotel[]> {
+  try {
+    // Set a timeout for the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+    
+    const response = await fetch("http://127.0.0.1:8000/api/listings/", {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch hotels: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching hotels:", error);
+    // Return empty array in case of error
+    return [];
   }
 }

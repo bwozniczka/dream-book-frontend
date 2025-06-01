@@ -28,6 +28,31 @@ export interface Review {
     createdAt: string
 }
 
+export interface Listing {
+    id: number;
+    title: string;
+    description: string;
+    price_per_night: string;
+    location: string;
+    created_at: string;
+    owner: number;
+    owner_username: string;
+}
+
+export interface Hotel {
+    id: number;
+    title: string;
+    description: string;
+    price_per_night: string;
+    location: string;
+    latitude: string;
+    longitude: string;
+    image_url: string;
+    created_at: string;
+    owner: number;
+    owner_username: string;
+}
+
 export interface UserData {
     id: string
     name: string

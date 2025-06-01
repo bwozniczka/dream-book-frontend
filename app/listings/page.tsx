@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { fetchListings } from "@/lib/api";
+import type { Listing } from "@/lib/types";
 
-interface Announcement {
+// Local interface for the form (different from API response)
+interface AnnouncementForm {
   id: number;
   title: string;
   address: string;
@@ -12,24 +15,28 @@ interface Announcement {
 }
 
 export default function Announcements() {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([
-    {
-      id: 1,
-      title: "Przytulny apartament w centrum",
-      address: "Warszawa, ul. Marszałkowska 10",
-      description: "Idealne miejsce na weekendowy wypad do stolicy.",
-      pricePerNight: 200,
-    },
-    {
-      id: 2,
-      title: "Domek nad morzem",
-      address: "Gdańsk, ul. Plażowa 5",
-      description: "Piękny domek z widokiem na morze.",
-      pricePerNight: 300,
-    },
-  ]);
+  const [announcements, setAnnouncements] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const [newAnnouncement, setNewAnnouncement] = useState<Announcement>({
+  useEffect(() => {
+    const getListings = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchListings();
+        setAnnouncements(data);
+      } catch (err) {
+        setError("Failed to fetch listings. Please try again later.");
+        console.error("Error fetching listings:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getListings();
+  }, []);
+
+  const [newAnnouncement, setNewAnnouncement] = useState<AnnouncementForm>({
     id: 0,
     title: "",
     address: "",
@@ -37,19 +44,47 @@ export default function Announcements() {
     pricePerNight: 0,
   });
 
-  const handleAddAnnouncement = () => {
-    if (!newAnnouncement.title || !newAnnouncement.address) return;
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-    setAnnouncements((prev) => [
-      ...prev,
-      { ...newAnnouncement, id: prev.length + 1 },
-    ]);
-    setNewAnnouncement({ id: 0, title: "", address: "", description: "", pricePerNight: 0 });
+  const handleAddAnnouncement = async () => {
+    if (!newAnnouncement.title || !newAnnouncement.address) return;
+    
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      
+      // Import the createListing function
+      const { createListing } = await import('@/lib/api');
+      
+      // Make the API call to create a new listing
+      const createdListing = await createListing({
+        title: newAnnouncement.title,
+        description: newAnnouncement.description || "",
+        price_per_night: newAnnouncement.pricePerNight.toString(),
+        location: newAnnouncement.address,
+      });
+      
+      // Add the new listing to the state
+      setAnnouncements((prev) => [...prev, createdListing]);
+      
+      // Reset form
+      setNewAnnouncement({ id: 0, title: "", address: "", description: "", pricePerNight: 0 });
+    } catch (error) {
+      console.error("Error creating announcement:", error);
+      setSubmitError("Failed to create announcement. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="container px-4 py-6 mx-auto md:px-6 md:py-12">
       <h1 className="text-3xl font-bold mb-6">Zarządzaj ogłoszeniami</h1>
+
+      {/* Loading and error states */}
+      {loading && <p className="text-center py-4">Loading listings...</p>}
+      {error && <p className="text-center py-4 text-red-600">{error}</p>}
 
       {/* Formularz dodawania ogłoszenia */}
       <div className="p-6 mb-8 bg-white border rounded-xl shadow-lg">
@@ -100,29 +135,39 @@ export default function Announcements() {
         <div className="mt-4">
           <Button
             onClick={handleAddAnnouncement}
+            disabled={isSubmitting}
             className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-black hover:to-gray-800 text-white font-medium py-2.5"
           >
-            Dodaj ogłoszenie
+            {isSubmitting ? 'Dodawanie...' : 'Dodaj ogłoszenie'}
           </Button>
+          {submitError && (
+            <p className="mt-2 text-red-600 text-sm">{submitError}</p>
+          )}
         </div>
       </div>
 
       {/* Lista ogłoszeń */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {announcements.map((announcement) => (
-          <div
-            key={announcement.id}
-            className="p-4 bg-white border rounded-lg shadow-md"
-          >
-            <h3 className="text-lg font-bold">{announcement.title}</h3>
-            <p className="text-sm text-gray-600">{announcement.address}</p>
-            <p className="mt-2 text-sm text-gray-800">{announcement.description}</p>
-            <p className="mt-4 text-lg font-semibold">
-              {announcement.pricePerNight} PLN / noc
-            </p>
-          </div>
-        ))}
-      </div>
+      {!loading && (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {announcements.map((listing) => (
+            <div
+              key={listing.id}
+              className="p-4 bg-white border rounded-lg shadow-md"
+            >
+              <h3 className="text-lg font-bold">{listing.title}</h3>
+              <p className="text-sm text-gray-600">{listing.location}</p>
+              <p className="mt-2 text-sm text-gray-800">{listing.description}</p>
+              <p className="mt-4 text-lg font-semibold">
+                {listing.price_per_night} PLN / noc
+              </p>
+              <div className="mt-2 text-xs text-gray-500">
+                <p>Added by: {listing.owner_username}</p>
+                <p>Created: {new Date(listing.created_at).toLocaleDateString()}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
