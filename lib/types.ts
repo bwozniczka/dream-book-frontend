@@ -53,6 +53,16 @@ export interface Hotel {
     owner_username: string;
 }
 
+export interface Host {
+    id: number;
+    user_id: number;
+    name: string;
+    location: string;
+    rating: number;
+    image: string;
+    details: string;
+}
+
 export interface UserData {
     id: string
     name: string

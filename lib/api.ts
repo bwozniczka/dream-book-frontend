@@ -1,5 +1,5 @@
 // filepath: /Users/bartlomiejwozniczka/Desktop/dream-book-frontend/lib/api.ts
-import type { Stay, UserData, Listing, Hotel } from "@/lib/types"
+import type { Stay, UserData, Listing, Hotel, Host } from "@/lib/types"
 import { mockLandlordStays, mockGuestStays, mockUserProfile } from "./mock-data"
 
 // External API base URL - używany w rzeczywistej implementacji
@@ -210,6 +210,30 @@ export async function fetchHotels(): Promise<Hotel[]> {
     return await response.json();
   } catch (error) {
     console.error("Error fetching hotels:", error);
+    // Return empty array in case of error
+    return [];
+  }
+}
+
+export async function fetchHosts(): Promise<Host[]> {
+  try {
+    // Set a timeout for the fetch request
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+    
+    const response = await fetch("http://127.0.0.1:8000/api/hosts/", {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch hosts: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching hosts:", error);
     // Return empty array in case of error
     return [];
   }
