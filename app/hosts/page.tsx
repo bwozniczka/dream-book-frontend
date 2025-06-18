@@ -3,15 +3,13 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { HostCard } from "@/components/host-card"
-import { LocationSearch } from "@/components/location-search"
+import { DynamicLocationSearch } from "@/components/dynamic-location-search"
 import { DatePickerWithRange } from "@/components/date-range-picker"
 import { GuestSelector } from "@/components/guest-selector"
 import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
 import { fetchHosts } from "@/lib/api"
 import type { Host } from "@/lib/types"
-
-// We'll fetch hosts from the API instead of using hardcoded data
 
 export default function Hosts() {
   const [location, setLocation] = useState("")
@@ -24,10 +22,8 @@ export default function Hosts() {
   const [filteredHosts, setFilteredHosts] = useState<Host[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
-  // State to store unique locations from API data
-  const [uniqueLocations, setUniqueLocations] = useState<string[]>([])
-  const [selectedLocation, setSelectedLocation] = useState<string>("")
+  // Store unique locations from API data
+  const [uniqueLocations, setUniqueLocations] = useState<{value: string, label: string}[]>([])
   
   // Fetch hosts from API on component mount
   useEffect(() => {
@@ -38,10 +34,11 @@ export default function Hosts() {
         setHosts(data);
         setFilteredHosts(data);
         
-        // Extract unique locations
+        // Extract unique locations for the LocationSearch component
         const locations = data
           .map(host => host.location)
-          .filter(location => typeof location === 'string' && location.trim() !== '')
+          .filter((location): location is string => 
+            typeof location === 'string' && location.trim() !== '')
           .reduce<string[]>((unique, location) => {
             const trimmed = location.trim();
             if (trimmed && !unique.includes(trimmed)) {
@@ -49,7 +46,11 @@ export default function Hosts() {
             }
             return unique;
           }, [])
-          .sort((a, b) => a.localeCompare(b));
+          .sort((a, b) => a.localeCompare(b))
+          .map(loc => ({
+            value: loc.toLowerCase().replace(/\s+/g, '-'),
+            label: loc
+          }));
           
         setUniqueLocations(locations);
       } catch (err) {
@@ -69,10 +70,8 @@ export default function Hosts() {
     setTimeout(() => {
       let filtered = [...hosts];
       
-      // Filter by selected location or search text
-      if (selectedLocation) {
-        filtered = filtered.filter(host => host.location === selectedLocation);
-      } else if (location) {
+      // Filter by location if provided
+      if (location) {
         filtered = filtered.filter(host =>
           host.location.toLowerCase().includes(location.toLowerCase())
         );
@@ -141,58 +140,32 @@ export default function Hosts() {
         <div className="p-6 mb-8 bg-white border rounded-xl shadow-lg transition-shadow hover:shadow-xl">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
             <div className="space-y-2">
-              <div className="flex items-center gap-1">
-                <p className="text-sm font-medium text-gray-700">Lokalizacja</p>
-                {selectedLocation && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-blue-600 rounded-full">1</span>
-                )}
-              </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                </div>
-                <select
-                  value={selectedLocation}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setSelectedLocation(value);
-                    setLocation(value);
-                    
-                    // Filter hosts immediately when location changes
-                    setLoading(true);
-                    setTimeout(() => {
-                      if (hosts.length === 0) {
-                        setLoading(false);
-                        return;
-                      }
-                      
-                      let filtered = [...hosts];
-                      
-                      // Filter by selected location
-                      if (value) {
-                        filtered = filtered.filter(host => host.location === value);
-                      }
-                      
-                      setFilteredHosts(filtered);
+              <p className="text-sm font-medium text-gray-700">Lokalizacja</p>
+              <DynamicLocationSearch 
+                locations={uniqueLocations} 
+                onChange={(value: string) => {
+                  setLocation(value);
+                  
+                  // Filter hosts when location changes
+                  setLoading(true);
+                  setTimeout(() => {
+                    if (hosts.length === 0) {
                       setLoading(false);
-                    }, 300);
-                  }}
-                  className="w-full pl-10 pr-10 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 appearance-none cursor-pointer"
-                >
-                  <option value="">Wszystkie lokalizacje</option>
-                  {uniqueLocations.map((loc) => (
-                    <option key={loc} value={loc}>{loc}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </div>
+                      return;
+                    }
+                    
+                    let filtered = [...hosts];
+                    
+                    if (value) {
+                      filtered = filtered.filter(host =>
+                        host.location === value
+                      );
+                    }
+                    
+                    setFilteredHosts(filtered);
+                    setLoading(false);
+                  }, 300);
+              }} />
             </div>
             <div className="space-y-2">
               <p className="text-sm font-medium text-gray-700">Termin pobytu</p>
@@ -242,16 +215,15 @@ export default function Hosts() {
           </div>
         </div>
 
-        {/* Results Count and Location Filter */}
+        {/* Results Count */}
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-lg font-medium">
-              {filteredHosts.length} {selectedLocation ? `host(s) w lokalizacji "${selectedLocation}"` : "host(s)"}
+              {filteredHosts.length} {location ? `host(s) w lokalizacji "${location}"` : "host(s)"}
             </p>
-            {selectedLocation && (
+            {location && (
               <button 
                 onClick={() => {
-                  setSelectedLocation("");
                   setLocation("");
                   setFilteredHosts(hosts);
                 }}
