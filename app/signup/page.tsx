@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,11 +15,14 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { Header } from "@/components/header"
+import { useAuth } from "@/contexts/auth-context"
+import { register } from "@/lib/auth"
 import { z } from "zod"
 
 const signUpSchema = z
   .object({
     email: z.string().email("Email is invalid"),
+    name: z.string().min(2, "Name must be at least 2 characters long"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters long")
@@ -34,7 +38,10 @@ const signUpSchema = z
 type SignUpFormData = z.infer<typeof signUpSchema>
 
 export default function SignUp() {
+  const router = useRouter()
+  const { login: authLogin } = useAuth()
   const [email, setEmail] = useState("")
+  const [name, setName] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -45,7 +52,7 @@ export default function SignUp() {
 
   const validateForm = (): boolean => {
     try {
-      signUpSchema.parse({ email, password, confirmPassword })
+      signUpSchema.parse({ email, name, password, confirmPassword })
       setValidationErrors({})
       return true
     } catch (error) {
@@ -73,22 +80,23 @@ export default function SignUp() {
     setIsLoading(true)
 
     try {
-      // jakis endpoint do rejestracji
-      const response = await fetch("https://api/cos/tutaj/bedzie", {
-        method: "POST",
-        body: JSON.stringify({ email, password, confirmPassword }),
+      const response = await register({
+        email,
+        password,
+        name,
+        role: "guest",
       })
 
-      const data = await response.json()
+      // Store authentication data
+      authLogin(response.user, response.access_token, response.refresh_token)
 
-      if (!response.ok) {
-        throw new Error(data.message || "An error occurred")
-      }
+      // Redirect to profile
+      router.push("/profile")
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Error: Unknown error occurred" + { error }
+          : "Wystąpił nieznany błąd podczas rejestracji"
       )
       console.error("Registration error", err)
     } finally {
@@ -111,6 +119,24 @@ export default function SignUp() {
 
               <CardContent className="pt-4">
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className={`w-full ${
+                        validationErrors.name ? "border-red-500" : ""
+                      }`}
+                    />
+                    {validationErrors.name && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {validationErrors.name}
+                      </p>
+                    )}
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
                     <Input

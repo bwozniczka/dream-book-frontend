@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +15,8 @@ import Link from "next/link"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Header } from "@/components/header"
+import { useAuth } from "@/contexts/auth-context"
+import { login } from "@/lib/auth"
 import { z } from "zod"
 
 const signInSchema = z.object({
@@ -24,6 +27,9 @@ const signInSchema = z.object({
 type SignInFormData = z.infer<typeof signInSchema>
 
 export default function SignIn() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { login: authLogin } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +37,8 @@ export default function SignIn() {
   const [validationErrors, setValidationErrors] = useState<
     Partial<Record<keyof SignInFormData, string>>
   >({})
+
+  const redirectPath = searchParams.get("redirect") || "/profile"
 
   const validateForm = (): boolean => {
     try {
@@ -62,22 +70,18 @@ export default function SignIn() {
     setIsLoading(true)
 
     try {
-      // jakis endpoint do logowania
-      const response = await fetch("https://api/cos/tutaj/bedzie", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      })
+      const response = await login({ email, password })
 
-      const data = await response.json()
+      // Store authentication data
+      authLogin(response.user, response.access_token, response.refresh_token)
 
-      if (!response.ok) {
-        throw new Error(data.message || "An error occurred")
-      }
+      // Redirect to the intended page or profile
+      router.push(redirectPath)
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Error: Unknown error occurred" + { error }
+          : "Wystąpił nieznany błąd podczas logowania"
       )
       console.error("Login error:", err)
     } finally {
