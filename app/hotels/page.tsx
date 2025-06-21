@@ -1,7 +1,6 @@
 "use client"
 import dynamic from "next/dynamic"
 import { useState, useEffect } from "react"
-import Link from "next/link"
 import { HotelCard } from "@/components/hotel-card"
 import { LocationSearch } from "@/components/location-search"
 import { DatePickerWithRange } from "@/components/date-range-picker"
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
 import { Slider } from "@/components/ui/slider"
 import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 import { fetchHotels } from "@/lib/api"
 import type { Hotel } from "@/lib/types"
 
@@ -29,14 +29,14 @@ const HotelMap = dynamic(() => import("@/components/hotel-map"), { ssr: false })
 
 // Type definition for the frontend hotel model
 interface FrontendHotel {
-  id: number;
-  name: string;
-  location: string;
-  price: number;
-  rating: number;
-  latitude: number;
-  longitude: number;
-  image: string;
+  id: number
+  name: string
+  location: string
+  price: number
+  rating: number
+  latitude: number
+  longitude: number
+  image: string
 }
 
 export default function Hotels() {
@@ -51,47 +51,51 @@ export default function Hotels() {
   const [apiHotels, setApiHotels] = useState<Hotel[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  
+
   // State to store unique locations from API data
-  const [uniqueLocations, setUniqueLocations] = useState<string[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [uniqueLocations, setUniqueLocations] = useState<string[]>([])
+  const [selectedLocation, setSelectedLocation] = useState<string>("")
 
   // Fetch hotels from API on component mount
   useEffect(() => {
     const getHotels = async () => {
       try {
-        setLoading(true);
-        const data = await fetchHotels();
-        setApiHotels(data);
-        
+        setLoading(true)
+        const data = await fetchHotels()
+        setApiHotels(data)
+
         // Convert API hotels to frontend format
-        const formattedHotels = data.map(hotel => mapApiHotelToComponentFormat(hotel));
-        setHotels(formattedHotels);
-        
+        const formattedHotels = data.map((hotel) =>
+          mapApiHotelToComponentFormat(hotel)
+        )
+        setHotels(formattedHotels)
+
         // Extract unique locations with validation
         const locations = data
-          .map(hotel => hotel.location)
-          .filter(location => typeof location === 'string' && location.trim() !== '') // Remove null/undefined/empty values
+          .map((hotel) => hotel.location)
+          .filter(
+            (location) => typeof location === "string" && location.trim() !== ""
+          ) // Remove null/undefined/empty values
           .reduce<string[]>((unique, location) => {
-            const trimmed = location.trim();
+            const trimmed = location.trim()
             if (trimmed && !unique.includes(trimmed)) {
-              unique.push(trimmed);
+              unique.push(trimmed)
             }
-            return unique;
+            return unique
           }, [])
-          .sort((a, b) => a.localeCompare(b)); // Sort locations alphabetically with proper locale handling
-          
-        setUniqueLocations(locations);
-      } catch (err) {
-        setError("Failed to fetch hotels. Please try again later.");
-        console.error("Error fetching hotels:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+          .sort((a, b) => a.localeCompare(b)) // Sort locations alphabetically with proper locale handling
 
-    getHotels();
-  }, []);
+        setUniqueLocations(locations)
+      } catch (err) {
+        setError("Failed to fetch hotels. Please try again later.")
+        console.error("Error fetching hotels:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getHotels()
+  }, [])
   const [isExpanded, setIsExpanded] = useState(false)
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500 })
   const [amenities, setAmenities] = useState({
@@ -156,7 +160,9 @@ export default function Hotels() {
         return
       }
 
-      let sortedHotels = apiHotels.map(hotel => mapApiHotelToComponentFormat(hotel))
+      let sortedHotels = apiHotels.map((hotel) =>
+        mapApiHotelToComponentFormat(hotel)
+      )
 
       sortedHotels = sortedHotels.filter(
         (hotel) =>
@@ -165,8 +171,8 @@ export default function Hotels() {
 
       // Filter by selected location (exact match from dropdown)
       if (selectedLocation) {
-        sortedHotels = sortedHotels.filter((hotel) =>
-          hotel.location === selectedLocation
+        sortedHotels = sortedHotels.filter(
+          (hotel) => hotel.location === selectedLocation
         )
       }
       // If using manual input location search
@@ -231,51 +237,7 @@ export default function Hotels() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold">DreamBook</span>
-          </Link>
-          <nav className="hidden gap-6 md:flex">
-            <Link
-              href="/hotels"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hotels
-            </Link>
-            <Link
-              href="/hosts"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hosts
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Deals
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Rewards
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Help
-            </Link>
-            <Link
-              href="/profile"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Mój profil
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="container px-4 py-6 mx-auto md:px-6 md:py-12">
         <div className="mb-6 md:mb-10">
@@ -292,12 +254,25 @@ export default function Hotels() {
               <div className="flex items-center gap-1">
                 <p className="text-sm font-medium text-gray-700">Lokalizacja</p>
                 {selectedLocation && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-blue-600 rounded-full">1</span>
+                  <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-semibold text-white bg-blue-600 rounded-full">
+                    1
+                  </span>
                 )}
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-500" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-gray-500"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
@@ -305,64 +280,85 @@ export default function Hotels() {
                 <select
                   value={selectedLocation}
                   onChange={(e) => {
-                    const value = e.target.value;
-                    setSelectedLocation(value);
-                    setLocation(value);
-                    
+                    const value = e.target.value
+                    setSelectedLocation(value)
+                    setLocation(value)
+
                     // Filter hotels immediately when location changes
-                    setLoading(true);
+                    setLoading(true)
                     setTimeout(() => {
                       if (apiHotels.length === 0) {
-                        setLoading(false);
-                        return;
+                        setLoading(false)
+                        return
                       }
-                      
-                      let filteredHotels = apiHotels.map(hotel => mapApiHotelToComponentFormat(hotel));
-                      
+
+                      let filteredHotels = apiHotels.map((hotel) =>
+                        mapApiHotelToComponentFormat(hotel)
+                      )
+
                       // Apply current filters
-                      filteredHotels = filteredHotels.filter(hotel => 
-                        hotel.price >= priceRange.min && hotel.price <= priceRange.max
-                      );
-                      
+                      filteredHotels = filteredHotels.filter(
+                        (hotel) =>
+                          hotel.price >= priceRange.min &&
+                          hotel.price <= priceRange.max
+                      )
+
                       // Filter by selected location
                       if (value) {
-                        filteredHotels = filteredHotels.filter(hotel => hotel.location === value);
+                        filteredHotels = filteredHotels.filter(
+                          (hotel) => hotel.location === value
+                        )
                       }
-                      
+
                       // Apply other filters
                       if (stars > 0) {
-                        filteredHotels = filteredHotels.filter(hotel => Math.floor(hotel.rating) >= stars);
+                        filteredHotels = filteredHotels.filter(
+                          (hotel) => Math.floor(hotel.rating) >= stars
+                        )
                       }
-                      
+
                       // Apply sorting
                       switch (sortOption) {
                         case "price_asc":
-                          filteredHotels.sort((a, b) => a.price - b.price);
-                          break;
+                          filteredHotels.sort((a, b) => a.price - b.price)
+                          break
                         case "price_desc":
-                          filteredHotels.sort((a, b) => b.price - a.price);
-                          break;
+                          filteredHotels.sort((a, b) => b.price - a.price)
+                          break
                         case "rating_desc":
-                          filteredHotels.sort((a, b) => b.rating - a.rating);
-                          break;
+                          filteredHotels.sort((a, b) => b.rating - a.rating)
+                          break
                         default:
-                          break;
+                          break
                       }
-                      
-                      setHotels(filteredHotels);
-                      setLoading(false);
-                    }, 300);
+
+                      setHotels(filteredHotels)
+                      setLoading(false)
+                    }, 300)
                   }}
                   className="w-full pl-10 pr-10 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 appearance-none cursor-pointer"
                 >
                   <option value="">Wszystkie lokalizacje</option>
                   {uniqueLocations.map((loc) => (
-                    <option key={loc} value={loc}>{loc}</option>
+                    <option key={loc} value={loc}>
+                      {loc}
+                    </option>
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </div>
@@ -866,16 +862,21 @@ export default function Hotels() {
         </div>
         <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-lg font-medium">{hotels.length} {selectedLocation ? `hotel(e) w lokalizacji "${selectedLocation}"` : "hotel(e)"}</p>
+            <p className="text-lg font-medium">
+              {hotels.length}{" "}
+              {selectedLocation
+                ? `hotel(e) w lokalizacji "${selectedLocation}"`
+                : "hotel(e)"}
+            </p>
             <p className="text-sm text-muted-foreground">
               {format(new Date(), "d MMMM yyyy")}
               {selectedLocation && (
-                <button 
+                <button
                   onClick={() => {
-                    setSelectedLocation("");
-                    setLocation("");
+                    setSelectedLocation("")
+                    setLocation("")
                     // Re-run search with no location filter
-                    searchHotels();
+                    searchHotels()
                   }}
                   className="ml-2 text-blue-600 hover:underline text-xs"
                 >
@@ -918,8 +919,8 @@ export default function Hotels() {
             <p className="text-sm text-muted-foreground mt-2">
               Please try again later or contact support.
             </p>
-            <Button 
-              onClick={() => window.location.reload()} 
+            <Button
+              onClick={() => window.location.reload()}
               className="mt-4 bg-gray-700 hover:bg-gray-800"
             >
               Refresh

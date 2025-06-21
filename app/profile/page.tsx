@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { UserProfile } from "@/components/user-profile"
+import { Header } from "@/components/header"
 import { fetchUserProfile } from "@/lib/api"
 import type { UserData } from "@/lib/types"
 
@@ -29,33 +30,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold">DreamBook</span>
-          </Link>
-          <nav className="hidden gap-6 md:flex">
-            <Link
-              href="/hotels"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hotele
-            </Link>
-            <Link
-              href="/hosts"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Gospodarze
-            </Link>
-            <Link
-              href="/profile"
-              className="text-sm font-medium transition-colors text-primary"
-            >
-              My profil
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       <main className="container px-4 py-6 mx-auto md:px-6 md:py-12">
         <div className="mb-6 md:mb-10">
@@ -87,7 +62,7 @@ export default function ProfilePage() {
           </div>
         )}
       </main>
-      
+
       <footer className="border-t mt-auto">
         <div className="container flex flex-col gap-6 py-8 px-4 md:px-6">
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">

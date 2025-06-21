@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { HostCard } from "@/components/host-card"
 import { LocationSearch } from "@/components/location-search"
 import { DatePickerWithRange } from "@/components/date-range-picker"
 import { GuestSelector } from "@/components/guest-selector"
 import { Button } from "@/components/ui/button"
 import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 
 const initialHosts = [
   {
@@ -60,46 +60,7 @@ export default function Hosts() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navbar */}
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold">DreamBook</span>
-          </Link>
-          <nav className="hidden gap-6 md:flex">
-            <Link
-              href="/hotels"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hotels
-            </Link>
-            <Link
-              href="/hosts"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hosts
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Deals
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Rewards
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Help
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content */}
       <main className="container px-4 py-6 mx-auto md:px-6 md:py-12">

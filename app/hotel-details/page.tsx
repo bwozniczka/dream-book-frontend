@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { DatePickerWithRange } from "@/components/date-range-picker"
 import { GuestSelector } from "@/components/guest-selector"
+import { Header } from "@/components/header"
 import {
   CheckIcon,
   MapPinIcon,
@@ -22,50 +23,7 @@ import Link from "next/link"
 export default function HotelDetails() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-bold">HotelBooker</span>
-          </Link>
-          <nav className="hidden gap-6 md:flex">
-            <Link
-              href="/"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Hotels
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Deals
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Rewards
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Help
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link
-              href="signin"
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              Sign In
-            </Link>
-            <Button>
-              <Link href="signup">Register</Link>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <Header />
       <main className="flex-1">
         <div className="container px-4 py-6 mx-auto md:px-6 md:py-8">
           <div className="flex flex-col gap-2 mb-6">
