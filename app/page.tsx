@@ -1,3 +1,7 @@
+"use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs"
@@ -8,8 +12,67 @@ import { GuestSelector } from "@/components/guest-selector"
 import { LocationSearch } from "@/components/location-search"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import type { DateRange } from "react-day-picker"
 
 export default function Home() {
+  const router = useRouter()
+  const [searchData, setSearchData] = useState({
+    location: "",
+    dates: undefined as DateRange | undefined,
+    guests: { adults: 2, children: 0, rooms: 1 },
+  })
+
+  const handleBookNow = () => {
+    router.push("/hotels")
+  }
+
+  const handleLearnMore = () => {
+    router.push("/about")
+  }
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+
+    if (searchData.location) {
+      params.set("location", searchData.location)
+    }
+
+    if (searchData.dates?.from) {
+      params.set("checkIn", searchData.dates.from.toISOString().split("T")[0])
+    }
+
+    if (searchData.dates?.to) {
+      params.set("checkOut", searchData.dates.to.toISOString().split("T")[0])
+    }
+
+    params.set("adults", searchData.guests.adults.toString())
+    params.set("children", searchData.guests.children.toString())
+    params.set("rooms", searchData.guests.rooms.toString())
+
+    router.push(`/hotels?${params.toString()}`)
+  }
+
+  const handleLocationChange = (location: string) => {
+    setSearchData((prev) => ({ ...prev, location }))
+  }
+
+  const handleDateChange = (dates: DateRange | undefined) => {
+    setSearchData((prev) => ({ ...prev, dates }))
+  }
+
+  const handleGuestsChange = (guests: {
+    adults: number
+    children: number
+    rooms: number
+  }) => {
+    setSearchData((prev) => ({ ...prev, guests }))
+  }
+
+  const handleSpecialOffer = (offerType: string) => {
+    const params = new URLSearchParams()
+    params.set("offer", offerType)
+    router.push(`/hotels?${params.toString()}`)
+  }
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -29,8 +92,14 @@ export default function Home() {
                 </div>
                 <div className="w-full max-w-sm space-y-2">
                   <div className="flex space-x-2">
-                    <Button className="w-full">Book Now</Button>
-                    <Button variant="outline" className="w-full">
+                    <Button className="w-full" onClick={handleBookNow}>
+                      Book Now
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={handleLearnMore}
+                    >
                       Learn More
                     </Button>
                   </div>
@@ -44,10 +113,12 @@ export default function Home() {
                     </TabsList>
                     <TabsContent value="hotels" className="p-6 space-y-4">
                       <div className="space-y-4">
-                        <LocationSearch />
-                        <DatePickerWithRange />
-                        <GuestSelector />
-                        <Button className="w-full">Search Hotels</Button>
+                        <LocationSearch onChange={handleLocationChange} />
+                        <DatePickerWithRange onChange={handleDateChange} />
+                        <GuestSelector onChange={handleGuestsChange} />
+                        <Button className="w-full" onClick={handleSearch}>
+                          Search Hotels
+                        </Button>
                       </div>
                     </TabsContent>
                   </Tabs>
@@ -143,7 +214,12 @@ export default function Home() {
                     <p className="text-muted-foreground">
                       Save 20% on weekend stays
                     </p>
-                    <Button className="mt-4 w-full">Book Now</Button>
+                    <Button
+                      className="mt-4 w-full"
+                      onClick={() => handleSpecialOffer("weekend")}
+                    >
+                      Book Now
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -161,7 +237,12 @@ export default function Home() {
                     <p className="text-muted-foreground">
                       30% off for stays of 7+ nights
                     </p>
-                    <Button className="mt-4 w-full">Book Now</Button>
+                    <Button
+                      className="mt-4 w-full"
+                      onClick={() => handleSpecialOffer("extended")}
+                    >
+                      Book Now
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -179,7 +260,12 @@ export default function Home() {
                     <p className="text-muted-foreground">
                       Kids stay free + free breakfast
                     </p>
-                    <Button className="mt-4 w-full">Book Now</Button>
+                    <Button
+                      className="mt-4 w-full"
+                      onClick={() => handleSpecialOffer("family")}
+                    >
+                      Book Now
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
